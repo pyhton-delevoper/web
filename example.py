@@ -1,20 +1,28 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, redirect, request
+import json
 
 
 app = Flask(__name__)
 
-users = ['mike', 'mishel', 'adel', 'keks', 'kamila']
-
 
 @app.route('/')
-def json():
-    return '<h1>SuS</h1>'
+def root():
+    return ('<a href="/users"><h1>USERS</h1></a>')
 
 
-@app.route('/users')
-def get_names():
-    chars = request.args.get('chars')
-    names = [name for name in users if str(chars) in name]
-    return render_template('users/index.html', names=names, chars=chars)
+@app.post('/users')
+def users_post():
+    user = request.form.to_dict()
+    json.dump(user, open('user.txt', 'w'))
+    return redirect('/users', 302)
 
 
+@app.get('/users')
+def users_get():
+    return f'<a href="/users/new">new user</a> <div>{open("user.txt").read()}</div>'
+
+
+@app.route('/users/new')
+def users_new():
+    user = json.load(open('user.html'))
+    return render_template('users/index.html', user=user)

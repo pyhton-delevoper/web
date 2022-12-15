@@ -1,9 +1,11 @@
-<form action="/users">
-    <input type="search" name="chars" value="{{ chars }}">
-    <input type="submit">
-    <ul>
-    {% for name in names %}
-        <li>{{ name }}</li>
-    {% endfor %}
-    </ul>
+<form action="/users" method="post">
+    <label>
+        name
+        <input name="name" type="text" value="{{ user.name }}">
+    </label>
+    <label>
+        email
+        <input name="email" type="email" value="{{ user.email }}">
+    </label>
+    <input type="submit" value="sign up">
 </form>
