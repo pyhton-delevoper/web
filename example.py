@@ -1,8 +1,10 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, url_for, flash, get_flashed_messages
 import json
 
 
 app = Flask(__name__)
+
+app.secret_key = 'krepysh'
 
 
 @app.route('/')
@@ -13,16 +15,21 @@ def root():
 @app.post('/users')
 def users_post():
     user = request.form.to_dict()
-    json.dump(user, open('user.txt', 'w'))
-    return redirect('/users', 302)
+    with open('user.txt', 'a') as file:
+        user_data = json.dumps(user)
+        file.write(user_data)
+    return redirect(url_for("users_get"))
 
 
-@app.get('/users')
+@app.route('/users')
 def users_get():
-    return f'<a href="/users/new">new user</a> <div>{open("user.txt").read()}</div>'
+    message = get_flashed_messages(with_categories=True)
+    users = open('user.txt').read()[1:-1].split('}{')
+    return render_template('users/user.html', message=message, users=users)
 
 
 @app.route('/users/new')
 def users_new():
-    user = json.load(open('user.html'))
+    user = request.args.to_dict()
+    flash('done', 'success')
     return render_template('users/index.html', user=user)
