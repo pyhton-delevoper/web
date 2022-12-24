@@ -1,0 +1,19 @@
+<a href="/users">USERS</a>
+<form action="{{ url_for('user_patch', id=user.id) }}" method="post">
+    <div>
+        <label>
+            New name
+            <input name="name" type="text" value="{{ user.name }}">
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
+        </label>
+    </div>
+    <div>
+        <label>
+            New email
+            <input name="email" type="email" value="{{ user.email }}">
+        </label>
+    </div>
+    <input type="submit" value="update">
+</form>
